@@ -162,27 +162,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\main.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\Menu.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\Message.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\MessageBox.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\Program.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\User.cpp"
+				RelativePath=".\main.cpp"
 				>
 			</File>
 		</Filter>
@@ -192,23 +172,23 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\Menu.h"
+				RelativePath=".\Menu.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\Message.h"
+				RelativePath=".\Message.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\MessageBox.h"
+				RelativePath=".\MessageBox.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\Program.h"
+				RelativePath=".\Program.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\Desktop\FreshStart\User.h"
+				RelativePath=".\User.h"
 				>
 			</File>
 		</Filter>
@@ -217,6 +197,34 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\mailboxes.txt"
+				>
+			</File>
+			<File
+				RelativePath=".\Menu.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Message.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MessageBox.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Program.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\User.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\users.txt"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

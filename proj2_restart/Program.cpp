@@ -16,7 +16,7 @@ User Program::getUser(string firstname, string lastname)
     for (size_t i = 0; i < users.size(); i++)
     {
         if (users[i].getFirstname() == firstname && 
-            users[i].getLastname() == lastname)
+            users[i].getLastname() == lastname )
             return users[i];
     }
 
@@ -26,14 +26,30 @@ User Program::getUser(string firstname, string lastname)
 
 void Program::addMessageBox()
 {
+	string nome;
+	std::cout << "	**** Adicao de Caixa de Mensagens ****\n\n" << "Nome: ";
+	getline(std::cin, nome);
+	MessageBox MessBox(nome);
+	messageBoxes.push_back(MessBox);
+	std::cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****";
 }
 
 void Program::registerInMessageBox()
 {
+
 }
 
 void Program::addUser()
 {
+	string first;
+	string last;
+	std::cout << "	**** Adicao de Utilizador ****\n\n" << "Primeiro Nome: ";
+	getline(std::cin, first);
+	std::cout << "Segundo Nome: ";
+	getline(std::cin, last);
+	User util(first, last);
+	users.push_back(util);
+	std::cout << "\n\n	**** Utilizador adicionada com sucesso ****";	
 }
 
 void Program::sendMessage()
