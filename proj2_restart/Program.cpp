@@ -261,13 +261,13 @@ void Program::saveMessageBoxes(string filename)
             
             for (size_t j = 0; j < messages.size(); j++)
             {
-                file << messages[i].getSubject() << "|"
-                     << messages[i].getSender().getFirstname() << "|"
-                     << messages[i].getSender().getLastname() << "|"
-                     << messages[i].getRecipient().getFirstname() << "|"
-                     << messages[i].getRecipient().getLastname();
+                file << messages[j].getSubject() << "|"
+                     << messages[j].getSender().getFirstname() << "|"
+                     << messages[j].getSender().getLastname() << "|"
+                     << messages[j].getRecipient().getFirstname() << "|"
+					 << messages[j].getRecipient().getLastname() << endl;
                 file << "[conteudo]" << endl;
-                file << messages[i].getContents() << endl;
+                file << messages[j].getContents() << endl;
                 file << "[/conteudo]" << endl;
             }
         }
