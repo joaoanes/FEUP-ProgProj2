@@ -121,6 +121,28 @@ void Program::sendMessage()
 
 void Program::readMessage()
 {
+	std::cout << "\n\n	**** Envio de Mensagens ****";	
+	showAllUsers();
+	std::cout << "\nEscolha o utilizador que pretende ler mensagens: ";
+	unsigned short temp;
+	std::cin >> temp;
+	User ChosenOne = users[temp];
+	endl(std::cout);
+	showAllMessageboxes();
+	std::cout << "Escolha a caixa de mensagens a que se pretende ligar: ";
+	std::cin >> temp;
+	MessageBox ReadFrom = messageBoxes[temp];
+	while (!ReadFrom.isLoggedIn(ChosenOne)) 
+	{
+		std::cout << "Especifique a sua password de acesso: ";
+		string pw;
+		std::cin >> pw;
+		ReadFrom.loginUser(ChosenOne, pw);
+	}
+	std::cout << "SAND NIGGERS";
+
+
+
 }
 
 static vector<string> split(string in, char delim)

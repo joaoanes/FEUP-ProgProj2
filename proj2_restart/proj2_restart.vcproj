@@ -198,10 +198,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\mailboxes.txt"
-				>
-			</File>
-			<File
 				RelativePath=".\Menu.cpp"
 				>
 			</File>
@@ -219,10 +215,6 @@
 			</File>
 			<File
 				RelativePath=".\User.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\users.txt"
 				>
 			</File>
 		</Filter>
