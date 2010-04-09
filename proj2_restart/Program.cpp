@@ -36,6 +36,7 @@ void Program::addMessageBox()
 
 void Program::showAllMessageboxes()
 {
+	std::cout << "\nCaixas de Mensagens:\n";
 	std::cout << "+-----+----------------------+\n";
 	for (size_t i = 0; i < messageBoxes.size() ; ++i)
 	{
@@ -47,6 +48,7 @@ void Program::showAllMessageboxes()
 }
 void Program::showAllUsers()
 {
+	std::cout << "Utilizadores:\n\n";
 	std::cout << "+-----+----------------------+----------------------+\n"; 
 	std::cout << "|   # |              1º Nome |              2º Nome |\n";
 	std::cout << "+-----+----------------------+----------------------+\n";
@@ -64,14 +66,12 @@ void Program::showAllUsers()
 
 void Program::registerInMessageBox()
 {
-	std::cout << "Utilizadores:\n\n";
 	showAllUsers();
 	std::cout << "\nEscolha o utilizador a registar: ";
 	unsigned short choice;
 	//rebustar depois
 	std::cin >> choice;
 	User ChosenOne = users[choice];
-	std::cout << "\nCaixas de Mensagens:\n";
 	showAllMessageboxes();
 	std::cout << "\n\nEscolha a caixa de mensagens na qual se pretende registar: ";
 	unsigned short boxchoice;
@@ -99,6 +99,24 @@ void Program::addUser()
 
 void Program::sendMessage()
 {
+	std::cout << "\n\n	**** Envio de Mensagens ****";
+	showAllUsers();
+	std::cout << "\nEscolha o emissor da mensagem: ";
+	int temp;
+	std::cin >> temp;
+	User Sender = users[temp];
+	std::cout << "Escolha o receptor da mensagem: ";
+	std::cin >> temp;
+	User Reciever = users[temp];
+	std::cout << "\n";
+	showAllMessageboxes();
+	std::cout << "\n\nEscolha a caixa de mensagens para a qual pretende enviar o e-mail: ";
+	std::cin >> temp;
+	MessageBox SendTo = messageBoxes[temp];
+	std::cout << "Especidique a sua password de acesso: ";
+	string pwd;
+	std::cin >> pwd;
+	
 }
 
 void Program::readMessage()
