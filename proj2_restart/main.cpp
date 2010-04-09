@@ -17,7 +17,7 @@ int main()
 
     Menu menuPrincipal, menuCorreio;
 
-    menuPrincipal = Menu("SimpleMail - Menu Principal", "Sair");
+    menuPrincipal = Menu("DICKSMAIL - ESTEVAO'S NUMBER 1 CHOICE FOR EMALES", "Sair");
     menuPrincipal.add("Gestao de Caixas de Correio", menuCorreio);
     menuPrincipal.add("Adicionar Utilizador", opAddUser);
 
