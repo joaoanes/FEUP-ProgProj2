@@ -25,6 +25,8 @@ class Program
         void loadUsers(string filename);
         void saveMessageBoxes(string filename);
         void saveUsers(string filename);
+		void showAllUsers();
+		void showAllMessageboxes();
 };
 
 #endif
