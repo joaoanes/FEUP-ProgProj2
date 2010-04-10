@@ -48,7 +48,7 @@ void Program::showAllMessageboxes()
 }
 void Program::showAllUsers()
 {
-	std::cout << "Utilizadores:\n\n";
+	std::cout << "Utilizadores:\n";
 	std::cout << "+-----+----------------------+----------------------+\n"; 
 	std::cout << "|   # |              1º Nome |              2º Nome |\n";
 	std::cout << "+-----+----------------------+----------------------+\n";
@@ -62,6 +62,11 @@ void Program::showAllUsers()
 		std::cout << temp << users[i].getLastname() << " |\n";
 	}
 	std::cout << "+-----+----------------------+----------------------+\n";
+}
+
+void Program::showMessages()
+{
+
 }
 
 void Program::registerInMessageBox()
@@ -139,7 +144,7 @@ void Program::readMessage()
 		std::cin >> pw;
 		ReadFrom.loginUser(ChosenOne, pw);
 	}
-	std::cout << "SAND NIGGERS";
+	ReadFrom.getAllMessagesFor(ChosenOne)
 
 
 
