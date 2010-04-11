@@ -88,7 +88,7 @@ void Program::showMessages(vector<Message> msgs)
 {
 	std::cout << "Mensagens:\n\n";
 	std::cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22
-	std::cout << "|   # |									  De |              Assunto |\n";
+	std::cout << "|   # |                                     De |              Assunto |\n";
 	std::cout << "+-----+----------------------------------------+----------------------+\n";
 	for (int i = msgs.size()-1; i >= 0 ; --i)
 	{

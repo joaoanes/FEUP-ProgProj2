@@ -1,7 +1,7 @@
 #include "MessageBox.h"
 
 vector<Message> MessageBox::PrivMensagens;
-
+vector<MessageboxData> MessageBox::PrivDados;
 MessageBox::MessageBox(string name)
 {
 	setName(name);
