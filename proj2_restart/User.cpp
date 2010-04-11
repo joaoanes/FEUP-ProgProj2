@@ -32,8 +32,13 @@ void User::setLastname(string lastname)
 	last = lastname;
 }
 
+string User::getFullname(User user)
+{
+	return (user.getFirstname() + " " + user.getLastname());
+}
 bool User::equalUsers(User user1, User user2)
 {
-	return (user1.getFirstname() == user2.getFirstname()) && (user1.getLastname() == user2.getLastname());
+
+	return (user1.getFullname(user1) == user2.getFullname(user2));
 }
 

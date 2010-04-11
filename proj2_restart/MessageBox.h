@@ -21,8 +21,8 @@ class MessageBox
 {
     private:
 	string nome_caixa;
-	vector<Message> PrivMensagens;
-	vector<MessageboxData> PrivDados;
+	static vector<Message> PrivMensagens;
+	static vector<MessageboxData> PrivDados;
 	
     public:
         MessageBox(string name);
