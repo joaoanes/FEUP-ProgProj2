@@ -86,11 +86,11 @@ bool Program::handleAuth(MessageBox MB, User login, bool revisit)
 }
 void Program::showMessages(vector<Message> msgs)
 {
-	std::cout << "Utilizadores:\n\n";
+	std::cout << "Mensagens:\n\n";
 	std::cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22
 	std::cout << "|   # |									  De |              Assunto |\n";
 	std::cout << "+-----+----------------------------------------+----------------------+\n";
-	for (size_t i = msgs.size()-1; i >= 0 ; --i)
+	for (int i = msgs.size()-1; i >= 0 ; --i)
 	{
 		std::cout << "|   " << i <<	" |";
 		string temp((39 - (msgs[i].getRecipientName()).size()), ' ');

@@ -1,5 +1,6 @@
 #include "MessageBox.h"
 
+vector<Message> MessageBox::PrivMensagens;
 
 MessageBox::MessageBox(string name)
 {
