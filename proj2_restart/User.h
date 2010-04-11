@@ -19,6 +19,7 @@ class User
         string  getLastname() const;
         void    setLastname(string lastname);
 		static bool	equalUsers(User user1, User user2);
+		string getFullname(User user);
 };
 
 #endif
