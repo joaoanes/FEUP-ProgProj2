@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Intel C++ Project"
+	Version="11.0"
+	Name="proj2_restart"
+	ProjectGUID="{160FC67E-3595-4BFD-87E9-C67E1729E5D7}"
+	VCNestedProjectGUID="{02C511AD-C92E-430C-ABB8-F9AA43342F96}"
+	VCNestedProjectFileName="proj2_restart.vcproj">
+	<Configurations/>
+	<Files/>
+</VisualStudioProject>
