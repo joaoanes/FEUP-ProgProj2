@@ -74,10 +74,10 @@ bool Program::handleAuth(MessageBox MB, User login, bool revisit)
 	while (!MB.isLoggedIn(login)) 
 	{
 		if (revisit)
-			std::cout << "\nPassword errada. Escreva \"EXIT\" para sair.";
+			std::cout << "\nPassword errada. Escreva \"\\EXIT\" para sair.";
 		std::cout << "\nEspecifique a sua password de acesso: ";
 		std::cin >> pw;
-		if (pw == "\"EXIT\"")
+		if (pw == "\\EXIT")
 			return false;
 		MB.loginUser(login, pw);
 		revisit = true;
