@@ -2,10 +2,14 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <iosfwd>
+#include <sstream>
 
 using std::ifstream;
 using std::ofstream;
 using std::endl;
+using std::cout;
+using std::cin;
 
 Program::Program()
 {
@@ -64,6 +68,40 @@ void Program::showAllUsers()
 	std::cout << "+-----+----------------------+----------------------+\n";
 }
 
+bool Program::handleAuth(MessageBox MB, User login, bool revisit)
+{
+	string pw;
+	while (!MB.isLoggedIn(login)) 
+	{
+		if (revisit)
+			std::cout << "\nPassword errada. Escreva \"EXIT\" para sair.";
+		std::cout << "\nEspecifique a sua password de acesso: ";
+		std::cin >> pw;
+		if (pw == "\"EXIT\"")
+			return false;
+		MB.loginUser(login, pw);
+		revisit = true;
+	}
+	return true;
+}
+void Program::showMessages(vector<Message> msgs)
+{
+	std::cout << "Utilizadores:\n\n";
+	std::cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22
+	std::cout << "|   # |									  De |              Assunto |\n";
+	std::cout << "+-----+----------------------------------------+----------------------+\n";
+	for (size_t i = msgs.size()-1; i >= 0 ; --i)
+	{
+		std::cout << "|   " << i <<	" |";
+		string temp((39 - (msgs[i].getRecipientName()).size()), ' ');
+		std::cout << temp << msgs[i].getRecipientName();
+		std::cout << " |";
+		temp = string((21 - (msgs[i].getSubject()).size()), ' ');
+		std::cout << temp << msgs[i].getSubject() << " |\n";
+	}
+	std::cout << "+-----+----------------------------------------+----------------------+\n";
+}
+
 void Program::registerInMessageBox()
 {
 	showAllUsers();
@@ -94,7 +132,7 @@ void Program::addUser()
 	getline(std::cin, last);
 	User util(first, last);
 	users.push_back(util);
-	std::cout << "\n\n	**** Utilizador adicionada com sucesso ****";	
+	std::cout << "\n\n	**** Utilizador adicionado com sucesso ****";	
 }
 
 void Program::sendMessage()
@@ -113,10 +151,25 @@ void Program::sendMessage()
 	std::cout << "\n\nEscolha a caixa de mensagens para a qual pretende enviar o e-mail: ";
 	std::cin >> temp;
 	MessageBox SendTo = messageBoxes[temp];
-	std::cout << "Especidique a sua password de acesso: ";
-	string pwd;
-	std::cin >> pwd;
-	
+	if (!handleAuth(SendTo, Sender, false)) 
+		exit(0);
+	std::cout << "\n\nAssunto da Mensagem: ";
+	string assunto;
+	getline(std::cin, assunto);
+	getline(std::cin, assunto);
+	string conteudo;
+	string temp2;
+	getline(std::cin, temp2);
+	while (temp2 != ".")
+	{
+		conteudo += temp2;
+		getline(std::cin, temp2);
+		conteudo += "\n";
+	}
+	Message msg(Sender, Reciever, assunto, conteudo);
+	SendTo.addMessage(msg);
+
+
 }
 
 void Program::readMessage()
@@ -132,15 +185,10 @@ void Program::readMessage()
 	std::cout << "Escolha a caixa de mensagens a que se pretende ligar: ";
 	std::cin >> temp;
 	MessageBox ReadFrom = messageBoxes[temp];
-	while (!ReadFrom.isLoggedIn(ChosenOne)) 
-	{
-		std::cout << "Especifique a sua password de acesso: ";
-		string pw;
-		std::cin >> pw;
-		ReadFrom.loginUser(ChosenOne, pw);
-	}
-	std::cout << "SAND NIGGERS";
-
+	handleAuth(ReadFrom, ChosenOne, false);
+	vector<Message> msgs; 
+	msgs = ReadFrom.getAllMessagesFor(ChosenOne);
+	showMessages(msgs);
 
 
 }

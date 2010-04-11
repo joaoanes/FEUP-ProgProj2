@@ -34,6 +34,6 @@ void User::setLastname(string lastname)
 
 bool User::equalUsers(User user1, User user2)
 {
-	return (user1.getFirstname() == user2.getFirstname()) && (user1.getLastname() == user2.getLastname());
+	return ((user1.getFirstname() == user2.getFirstname()) && (user1.getLastname() == user2.getLastname()));
 }
 

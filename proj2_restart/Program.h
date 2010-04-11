@@ -4,6 +4,8 @@
 #include "User.h"
 #include "MessageBox.h"
 #include <vector>
+#include <string>
+
 
 using std::vector;
 
@@ -27,6 +29,8 @@ class Program
         void saveUsers(string filename);
 		void showAllUsers();
 		void showAllMessageboxes();
+		void showMessages(vector<Message> msgs);
+		bool handleAuth(MessageBox MB, User login, bool revisit);
 };
 
 #endif
