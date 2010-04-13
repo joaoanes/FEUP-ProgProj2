@@ -153,23 +153,34 @@ int Program::handleChoice(int lower, int highernotinclusive) //o maior numero na
 
 	cout << "\nPor favor escolha so numeros para representar escolhas.\n";
 	handleChoice(lower, highernotinclusive);
+
 }
 void Program::registerInMessageBox()
 {
+	if (users.empty())
+	{
+		cout << "Nao existem utilizadores para mandar mensagens. \nAdicione alguns e tente outra vez.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	showAllUsers();
 	cout << "\nEscolha o utilizador a registar: ";
-	unsigned short choice;
-	//rebustar depois
-	cin >> choice;
+	unsigned short choice = handleChoice(0, users.size());
 	User ChosenOne = users[choice];
+	if (messageBoxes.empty())
+	{
+		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	showAllMessageboxes();
 	cout << "\n\nEscolha a caixa de mensagens na qual se pretende registar: ";
-	unsigned short boxchoice;
-	cin >> boxchoice;
+	choice = handleChoice(0, messageBoxes.size());
 	cout << "Escolha a sua password de acesso: ";
 	string passwd;
-	cin >> passwd; //todo rebustar
-	messageBoxes[boxchoice].addUser(ChosenOne, passwd);
+	getline(cin, passwd);
+	getline(cin, passwd);
+	messageBoxes[choice].addUser(ChosenOne, passwd);
 
 	cout << "\n\n	**** Utilizador registado com sucesso ****";
 }
@@ -199,21 +210,40 @@ void Program::addUser()
 
 void Program::sendMessage()
 {
-	cout << "\n\n	**** Envio de Mensagens ****";
+	cout << "\n\n	**** Envio de Mensagens ****\n";
+	if (users.empty())
+	{
+		cout << "Nao existem utilizadores para mandar mensagens. \nAdicione alguns e tente outra vez.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	showAllUsers();
-	cout << "\nEscolha o emissor da mensagem: ";
+	
+	cout << "Escolha o emissor da mensagem: ";
 	unsigned short temp;
 	temp = handleChoice(0, users.size());
 	User Sender = users[temp];
 	cout << "Escolha o receptor da mensagem: ";
 	temp = handleChoice(0, users.size());
 	User Reciever = users[temp];
-	cout << "\n";
+	cout << endl;
+	if (messageBoxes.empty())
+	{
+		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	showAllMessageboxes();
 	cout << "\n\nEscolha a caixa de mensagens para a qual pretende enviar o e-mail: ";
 	temp = handleChoice(0, messageBoxes.size());
-	MessageBox SendTo = messageBoxes[temp];
-	if (!handleAuth(SendTo, Sender)) 
+	MessageBox SendTo = &messageBoxes[temp];
+	if (!SendTo->isRegistered(Reciever) || !SendTo->isRegistered(Sender))
+	{
+		cout << "Um dos utilizadores nao se encontra registado na caixa de mensagens. Por favor tente outra vez.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
+	if (!handleAuth(*SendTo, Sender)) 
 		return; //caso o utilizador escreva "\EXIT" o programa volta ao menu principal
 	cout << "\n\nAssunto da Mensagem: ";
 	string assunto;
@@ -235,27 +265,51 @@ void Program::sendMessage()
 		conteudo += "\n";
 	}
 	Message msg(Sender, Reciever, assunto, conteudo);
-	SendTo.addMessage(msg);
+	SendTo->addMessage(msg);
 	cout << "\n		**** Mensagem Enviada ****";
 }
 
 void Program::readMessage()
 {
-	cout << "\n\n	**** Envio de Mensagens ****";	
+	cout << "\n\n	**** Envio de Mensagens ****\n";
+	if (users.empty())
+	{
+		cout << "Nao existem utilizadores para mandar mensagens. \nAdicione alguns e tente outra vez.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	showAllUsers();
-	cout << "\nEscolha o utilizador que pretende ler mensagens: ";
+	cout << "Escolha o utilizador que pretende ler mensagens: ";
 	unsigned short temp;
 	temp = handleChoice(0, users.size());
 	User ChosenOne = users[temp];
 	endl(cout);
+	if (messageBoxes.empty())
+	{
+		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	showAllMessageboxes();
 	cout << "Escolha a caixa de mensagens a que se pretende ligar: ";
 	temp = handleChoice(0, messageBoxes.size());
 	MessageBox ReadFrom = messageBoxes[temp];
+	if (!ReadFrom.isRegistered(ChosenOne))
+	{
+		cout << "O utilizador escolhido nao esta registado na caixa. Por favor tente novamente\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	if (!handleAuth(ReadFrom, ChosenOne))
 		return;
 	vector<Message> msgs; 
 	msgs = ReadFrom.getAllMessagesFor(ChosenOne);
+	if (msgs.empty())
+	{
+		cout << "O utilizador nao tem mensagens.\n";
+		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		return;
+	}
 	showMessages(msgs);
 	cout << "Escolha a mensagem que pretende ler: ";
 	temp = handleChoice(0, msgs.size());
@@ -263,175 +317,176 @@ void Program::readMessage()
 	system("pause"); 
 }
 
+//////////////////////////////////////////////////////////////////////////
 static vector<string> split(string in, char delim)
 {
-    vector<string> result;
-    size_t i = 0, f;
+	vector<string> result;
+	size_t i = 0, f;
 
-    while (i < in.size() && ((f = in.find(delim, i)) != string::npos))
-    {
-        result.push_back(in.substr(i, f-i));
-        i = f + 1;
-    }
+	while (i < in.size() && ((f = in.find(delim, i)) != string::npos))
+	{
+		result.push_back(in.substr(i, f-i));
+		i = f + 1;
+	}
 
-    result.push_back(in.substr(i));
-    return result;
+	result.push_back(in.substr(i));
+	return result;
 }
 
 void Program::loadMessageBoxes(string filename)
 {
-    ifstream file;
-    file.open(filename.c_str());
+	ifstream file;
+	file.open(filename.c_str());
 
-    if (file.is_open())
-    {
-        string temp;
-        int n_mailboxes;
+	if (file.is_open())
+	{
+		string temp;
+		int n_mailboxes;
 
-        getline(file, temp);
-        n_mailboxes = atoi(temp.c_str());
+		getline(file, temp);
+		n_mailboxes = atoi(temp.c_str());
 
-        for (int i = 0; i < n_mailboxes; i++)
-        {
-            string name;
-            getline(file, name);
-            this->messageBoxes.push_back(MessageBox(name));
-        }
+		for (int i = 0; i < n_mailboxes; i++)
+		{
+			string name;
+			getline(file, name);
+			this->messageBoxes.push_back(MessageBox(name));
+		}
 
-        for (int i = 0; i < n_mailboxes; i++)
-        {
-            int n_users, n_messages;
+		for (int i = 0; i < n_mailboxes; i++)
+		{
+			int n_users, n_messages;
 
-            getline(file, temp);
-            n_users = atoi(temp.c_str());
+			getline(file, temp);
+			n_users = atoi(temp.c_str());
 
-            for (int j = 0; j < n_users; j++)
-            {
-                string user_details;
-                getline(file, user_details);
-                vector<string> name = split(user_details, '|');
+			for (int j = 0; j < n_users; j++)
+			{
+				string user_details;
+				getline(file, user_details);
+				vector<string> name = split(user_details, '|');
 
-                User u = this->getUser(name[0], name[1]);
-                this->messageBoxes[i].addUser(u, name[2]);
-            }
+				User u = this->getUser(name[0], name[1]);
+				this->messageBoxes[i].addUser(u, name[2]);
+			}
 
-            getline(file, temp);
-            n_messages = atoi(temp.c_str());
+			getline(file, temp);
+			n_messages = atoi(temp.c_str());
 
-            for (int j = 0; j < n_messages; j++)
-            {
-                string message_header, contents = "", t_contents;
-                getline(file, message_header);
-                vector<string> details = split(message_header, '|');
+			for (int j = 0; j < n_messages; j++)
+			{
+				string message_header, contents = "", t_contents;
+				getline(file, message_header);
+				vector<string> details = split(message_header, '|');
 
-                User emitter = this->getUser(details[1], details[2]);
-                User recipient = this->getUser(details[3], details[4]);
+				User emitter = this->getUser(details[1], details[2]);
+				User recipient = this->getUser(details[3], details[4]);
 
-                getline(file, t_contents);
+				getline(file, t_contents);
 
-                if (t_contents == "[conteudo]")
-                {
-                    while (getline(file, t_contents) && 
-                            t_contents != "[/conteudo]")
-                    {
-                        contents += (t_contents + "\n");
-                    }
-                }
+				if (t_contents == "[conteudo]")
+				{
+					while (getline(file, t_contents) && 
+						t_contents != "[/conteudo]")
+					{
+						contents += (t_contents + "\n");
+					}
+				}
 
-                this->messageBoxes[i].addMessage(
-                        Message(emitter, recipient, details[0], contents));
-            }
-        }
+				this->messageBoxes[i].addMessage(
+					Message(emitter, recipient, details[0], contents));
+			}
+		}
 
-        file.close();
-    }
+		file.close();
+	}
 }
 
 void Program::loadUsers(string filename)
 {
-    ifstream file;
-    file.open(filename.c_str());
+	ifstream file;
+	file.open(filename.c_str());
 
-    if (file.is_open())
-    {
-        int n_users;
-        string user_details, temp;
+	if (file.is_open())
+	{
+		int n_users;
+		string user_details, temp;
 
-        getline(file, temp);
-        n_users = atoi(temp.c_str());
+		getline(file, temp);
+		n_users = atoi(temp.c_str());
 
-        for (int i = 0; i < n_users; i++)
-        {
-            getline(file, user_details);
-            vector<string> name = split(user_details, '|');
+		for (int i = 0; i < n_users; i++)
+		{
+			getline(file, user_details);
+			vector<string> name = split(user_details, '|');
 
-            this->users.push_back(User(name[0], name[1]));
-        }        
+			this->users.push_back(User(name[0], name[1]));
+		}        
 
-        file.close();
-    }
+		file.close();
+	}
 }
 
 void Program::saveMessageBoxes(string filename)
 {
-    ofstream file;
-    file.open(filename.c_str());
+	ofstream file;
+	file.open(filename.c_str());
 
-    if (file.is_open())
-    {
-        file << this->messageBoxes.size() << endl;
+	if (file.is_open())
+	{
+		file << this->messageBoxes.size() << endl;
 
-        for (size_t i = 0; i < this->messageBoxes.size(); i++)
-            file << this->messageBoxes[i].getName() << endl;
+		for (size_t i = 0; i < this->messageBoxes.size(); i++)
+			file << this->messageBoxes[i].getName() << endl;
 
-        for (size_t i = 0; i < this->messageBoxes.size(); i++)
-        {
-            vector<User> users = this->messageBoxes[i].getRegisteredUsers();
-            file << users.size() << endl;
+		for (size_t i = 0; i < this->messageBoxes.size(); i++)
+		{
+			vector<User> users = this->messageBoxes[i].getRegisteredUsers();
+			file << users.size() << endl;
 
-            for (size_t j = 0; j < users.size(); j++)
-            {
-                file << users[j].getFirstname() << "|" << users[j].getLastname()
-                     << "|" << this->messageBoxes[i].getUserPassword(users[j]) 
-                     << endl;
-            }
+			for (size_t j = 0; j < users.size(); j++)
+			{
+				file << users[j].getFirstname() << "|" << users[j].getLastname()
+					<< "|" << this->messageBoxes[i].getUserPassword(users[j]) 
+					<< endl;
+			}
 
-            vector<Message> messages = this->messageBoxes[i].getAllMessages();
-            file << messages.size() << endl;
-            
-            for (size_t j = 0; j < messages.size(); j++)
-            {
-                file << messages[j].getSubject() << "|"
-                     << messages[j].getSender().getFirstname() << "|"
-                     << messages[j].getSender().getLastname() << "|"
-                     << messages[j].getRecipient().getFirstname() << "|"
-					 << messages[j].getRecipient().getLastname() << endl;
-                file << "[conteudo]" << endl;
-                file << messages[j].getContents() << endl;
-                file << "[/conteudo]" << endl;
-            }
-        }
+			vector<Message> messages = this->messageBoxes[i].getAllMessages();
+			file << messages.size() << endl;
 
-        file.close();
-    }
+			for (size_t j = 0; j < messages.size(); j++)
+			{
+				file << messages[j].getSubject() << "|"
+					<< messages[j].getSender().getFirstname() << "|"
+					<< messages[j].getSender().getLastname() << "|"
+					<< messages[j].getRecipient().getFirstname() << "|"
+					<< messages[j].getRecipient().getLastname() << endl;
+				file << "[conteudo]" << endl;
+				file << messages[j].getContents() << endl;
+				file << "[/conteudo]" << endl;
+			}
+		}
+
+		file.close();
+	}
 }
 
 void Program::saveUsers(string filename)
 {
-    ofstream file;
-    file.open(filename.c_str());
-    
-    if (file.is_open())
-    {
-        file << this->users.size() << endl;
+	ofstream file;
+	file.open(filename.c_str());
 
-        for (size_t i = 0; i < users.size(); i++)
-        {
-            file << users[i].getFirstname() << "|" << users[i].getLastname() 
-                 << endl;
-        }
+	if (file.is_open())
+	{
+		file << this->users.size() << endl;
 
-        file.close();
-    }
+		for (size_t i = 0; i < users.size(); i++)
+		{
+			file << users[i].getFirstname() << "|" << users[i].getLastname() 
+				<< endl;
+		}
+
+		file.close();
+	}
 }
 
