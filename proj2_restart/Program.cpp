@@ -16,6 +16,25 @@ Program::Program()
 {
 }
 
+bool Program::stringIsNumber(string victim)
+{
+	bool result = true;
+	for (size_t i = 0; i < victim.size(); ++i)
+	{
+		int aye = victim[i];
+		bool isit = ((aye < 48) || (aye > 57));
+		result = result && !isit;
+	}
+	return result;
+}
+int	 Program::intisizer(string str)
+{
+	int output;
+	stringstream sstr;
+	sstr << str;
+	sstr >> output;
+	return output;
+}
 User Program::getUser(string firstname, string lastname)
 {
     for (size_t i = 0; i < users.size(); i++)
@@ -34,6 +53,11 @@ void Program::addMessageBox()
 	string nome;
 	cout << "	**** Adicao de Caixa de Mensagens ****\n\n" << "Nome: ";
 	getline(cin, nome);
+	while (nome.size() > 16)
+	{
+		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		getline(cin, nome);
+	}
 	MessageBox MessBox(nome);
 	messageBoxes.push_back(MessBox);
 	cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****";
@@ -69,6 +93,31 @@ void Program::showAllUsers()
 	cout << "+-----+----------------------+----------------------+\n";
 }
 
+void Program::showMessages(vector<Message> msgs)
+{
+	cout << "Mensagens:\n\n";
+	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22
+	cout << "|   # |                                     De |              Assunto |\n";
+	cout << "+-----+----------------------------------------+----------------------+\n";
+	for (int i = msgs.size()-1; i >= 0 ; --i)
+	{
+		cout << "|   " << i <<	" |";
+		string temp((39 - (msgs[i].getSenderName()).size()), ' ');
+		cout << temp << msgs[i].getSenderName();
+		cout << " |";
+		temp = string((21 - (msgs[i].getSubject()).size()), ' ');
+		cout << temp << msgs[i].getSubject(	) << " |\n";
+	}
+	cout << "+-----+----------------------------------------+----------------------+\n";
+}
+
+void Program::showMessage(Message msg)
+{
+	cout << "Assunto: " << msg.getSubject() << endl
+		<< "Remetente: " << msg.getSenderName() << endl
+		<< "Conteudo: " << msg.getContents(); //a mensagem ja termina com endl
+	cout << "	**** FIM DE MENSAGEM ****\n";
+}
 bool Program::handleAuth( MessageBox MB, User login )
 {
 	bool revisit = false;
@@ -86,24 +135,25 @@ bool Program::handleAuth( MessageBox MB, User login )
 	}
 	return true;
 }
-void Program::showMessages(vector<Message> msgs)
+int Program::handleChoice(int lower, int highernotinclusive) //o maior numero nao e inclusivo para podermos usar vector::size() sem ter que decrementar o resultado
 {
-	cout << "Mensagens:\n\n";
-	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22
-	cout << "|   # |                                     De |              Assunto |\n";
-	cout << "+-----+----------------------------------------+----------------------+\n";
-	for (int i = msgs.size()-1; i >= 0 ; --i)
+	string schoice;
+	cin >> schoice;
+	while (((intisizer(schoice) >= highernotinclusive) || (intisizer(schoice) < lower)) && stringIsNumber(schoice))
 	{
-		cout << "|   " << i <<	" |";
-		string temp((39 - (msgs[i].getRecipientName()).size()), ' ');
-		cout << temp << msgs[i].getRecipientName();
-		cout << " |";
-		temp = string((21 - (msgs[i].getSubject()).size()), ' ');
-		cout << temp << msgs[i].getSubject() << " |\n";
+		cout << "\nA sua escolha encontra-se fora das escolhas disponiveis. ";
+		if (lower != (highernotinclusive - 1))
+			cout << "Por favor escolha uma opcao de " << lower << " ate " << highernotinclusive-1 << ".\n";
+		else 
+			cout << "So pode escolher " << lower << ".\n";
+		cin >> schoice;
 	}
-	cout << "+-----+----------------------------------------+----------------------+\n";
-}
+	if (stringIsNumber(schoice))
+		return intisizer(schoice);
 
+	cout << "\nPor favor escolha so numeros para representar escolhas.\n";
+	handleChoice(lower, highernotinclusive);
+}
 void Program::registerInMessageBox()
 {
 	showAllUsers();
@@ -130,50 +180,23 @@ void Program::addUser()
 	string last;
 	cout << "	**** Adicao de Utilizador ****\n\n" << "Primeiro Nome: ";
 	getline(cin, first);
+	while (first.size() > 16)
+	{
+		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		getline(cin, first);
+	}
 	cout << "Segundo Nome: ";
 	getline(cin, last);
+	while (last.size() > 16)
+	{
+		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		getline(cin, last);
+	}
 	User util(first, last);
 	users.push_back(util);
 	cout << "\n\n	**** Utilizador adicionado com sucesso ****";	
 }
 
-bool Program::stringIsNumber(string victim)
-{
-	bool result = true;
-	for (size_t i = 0; i > victim.size(); ++i)
-	{
-		result = result && !((victim[i] > 39) || (victim[i] < 30));
-	}
-	return result;
-}
-int Program::handleChoice(int lower, int highernotinclusive) //o maior numero nao e inclusivo para podermos usar vector::size() sem ter que decrementar o resultado
-{
-	stringstream input;
-	string schoice;
-	cin >> schoice;
-	if (stringIsNumber(schoice))
-	{
-		int choice;
-		input << schoice;
-		input >> choice;
-		while (choice >= highernotinclusive || choice < lower)
-		{
-			cout << "\nA sua escolha encontra-se fora das escolhas disponiveis. Por favor escolha uma opcao de " << lower << " ate " << highernotinclusive-1 << ".\n";
-			cin >> choice;
-		}
-		return choice;
-	}
-	cout << "\nPor favor escolha so numeros para representar escolhas.\n";
-	handleChoice(lower, highernotinclusive);
-
-}
-void Program::showMessage(Message msg)
-{
-   cout << "Assunto: " << msg.getSubject() << endl
-		<< "Remetente: " << msg.getRecipientName() << endl
-		<< "Conteudo: " << msg.getContents(); //a mensagem ja termina com endl
-   cout << "	**** FIM DE MENSAGEM ****";
-}
 void Program::sendMessage()
 {
 	cout << "\n\n	**** Envio de Mensagens ****";
@@ -196,6 +219,11 @@ void Program::sendMessage()
 	string assunto;
 	getline(cin, assunto); //o primeiro e ignorado. go figure.
 	getline(cin, assunto);
+	while (assunto.size() > 16)
+	{
+		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		getline(cin, assunto);
+	}
 	string conteudo;
 	string temp2;
 	cout << "Por favor escreva o conteudo da mensagem. Indique o fim da sua mensagem com uma linha consistindo apenas de um \".\"\n";
@@ -222,16 +250,17 @@ void Program::readMessage()
 	endl(cout);
 	showAllMessageboxes();
 	cout << "Escolha a caixa de mensagens a que se pretende ligar: ";
-	handleChoice(0, messageBoxes.size());
+	temp = handleChoice(0, messageBoxes.size());
 	MessageBox ReadFrom = messageBoxes[temp];
-	handleAuth(ReadFrom, ChosenOne);
+	if (!handleAuth(ReadFrom, ChosenOne))
+		return;
 	vector<Message> msgs; 
 	msgs = ReadFrom.getAllMessagesFor(ChosenOne);
 	showMessages(msgs);
 	cout << "Escolha a mensagem que pretende ler: ";
 	temp = handleChoice(0, msgs.size());
 	showMessage(msgs[temp]);
-
+	system("pause"); 
 }
 
 static vector<string> split(string in, char delim)
