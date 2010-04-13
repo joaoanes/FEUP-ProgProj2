@@ -1,0 +1,5 @@
+ASSSSSSSSSSSKKKKKKKKK list
+
+-- getline(cin, assunto) repetido duas vezes
+-- natureza da recursividade em c++ (processo nao para), usar handlechoice como ex
+-- usar function() em vez de Program::function() (ou this->function())
