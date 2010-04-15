@@ -47,7 +47,6 @@ User Program::getUser(string firstname, string lastname)
     // nao deve acontecer...
     return User("", "");
 }
-
 void Program::addMessageBox()
 {
 	string nome;
@@ -59,8 +58,20 @@ void Program::addMessageBox()
 		getline(cin, nome);
 	}
 	MessageBox MessBox(nome);
-	messageBoxes.push_back(MessBox);
-	cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****";
+	bool check = false;
+	for (int i = 0; i < messageBoxes.size() ; ++i)
+	{
+		check = check || (messageBoxes[i].getName() == nome);
+	}
+	if (!check)
+	{
+		messageBoxes.push_back(MessBox);
+		cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****";
+	}
+	else
+	{
+		cout << "\nJa existe caixa de mensagens com esse nome. Por favor tente com outro nome.";
+	}
 }
 
 void Program::showAllMessageboxes()
@@ -94,6 +105,7 @@ void Program::showAllUsers()
 }
 
 void Program::showMessages(vector<Message> msgs)
+
 {
 	cout << "Mensagens:\n\n";
 	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22
@@ -236,7 +248,7 @@ void Program::sendMessage()
 	showAllMessageboxes();
 	cout << "\n\nEscolha a caixa de mensagens para a qual pretende enviar o e-mail: ";
 	temp = handleChoice(0, messageBoxes.size());
-	MessageBox SendTo = &messageBoxes[temp];
+	MessageBox* SendTo = &messageBoxes[temp];
 	if (!SendTo->isRegistered(Reciever) || !SendTo->isRegistered(Sender))
 	{
 		cout << "Um dos utilizadores nao se encontra registado na caixa de mensagens. Por favor tente outra vez.\n";

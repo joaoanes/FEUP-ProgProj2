@@ -16,6 +16,14 @@ class Program
         vector<User>        users;
         vector<MessageBox>  messageBoxes;
         User                getUser(string firstname, string lastname);
+		void showAllUsers();
+		void showAllMessageboxes();
+		void showMessages(vector<Message> msgs);
+		void showMessage(Message msg);
+		bool handleAuth(MessageBox MB, User login);
+		int handleChoice(int lower, int highernotinclusive);
+		bool stringIsNumber(string victim);
+		int intisizer(string str);
 
     public:
         Program();
@@ -28,14 +36,7 @@ class Program
         void loadUsers(string filename);
         void saveMessageBoxes(string filename);
         void saveUsers(string filename);
-		void showAllUsers();
-		void showAllMessageboxes();
-		void showMessages(vector<Message> msgs);
-		void showMessage(Message msg);
-		bool handleAuth(MessageBox MB, User login);
-		int handleChoice(int lower, int highernotinclusive);
-		bool stringIsNumber(string victim);
-		int intisizer(string str);
+
 };
 
 #endif
