@@ -47,6 +47,14 @@ User Program::getUser(string firstname, string lastname)
     // nao deve acontecer...
     return User("", "");
 }
+void Program::hold()
+{
+	{ char c;
+	cout << "Carregue enter para continuar...";
+	cin.read(&c,1); 
+	if (cin.peek() == 0xA) {;}
+	}
+}
 void Program::addMessageBox()
 {
 	string nome;
@@ -59,7 +67,7 @@ void Program::addMessageBox()
 	}
 	MessageBox MessBox(nome);
 	bool check = false;
-	for (int i = 0; i < messageBoxes.size() ; ++i)
+	for (size_t i = 0; i < messageBoxes.size() ; ++i)
 	{
 		check = check || (messageBoxes[i].getName() == nome);
 	}
@@ -67,10 +75,12 @@ void Program::addMessageBox()
 	{
 		messageBoxes.push_back(MessBox);
 		cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****";
+		hold();
 	}
 	else
 	{
 		cout << "\nJa existe caixa de mensagens com esse nome. Por favor tente com outro nome.";
+		hold();
 	}
 }
 
@@ -104,7 +114,7 @@ void Program::showAllUsers()
 	cout << "+-----+----------------------+----------------------+\n";
 }
 
-void Program::showMessages(vector<Message> msgs)
+void Program::showMessages(vector<Message>& msgs)
 
 {
 	cout << "Mensagens:\n\n";
@@ -123,14 +133,14 @@ void Program::showMessages(vector<Message> msgs)
 	cout << "+-----+----------------------------------------+----------------------+\n";
 }
 
-void Program::showMessage(Message msg)
+void Program::showMessage(Message& msg)
 {
 	cout << "Assunto: " << msg.getSubject() << endl
 		<< "Remetente: " << msg.getSenderName() << endl
 		<< "Conteudo: " << msg.getContents(); //a mensagem ja termina com endl
 	cout << "	**** FIM DE MENSAGEM ****\n";
 }
-bool Program::handleAuth( MessageBox MB, User login )
+bool Program::handleAuth(MessageBox& MB, User& login )
 {
 	bool revisit = false;
 	string pw;
@@ -172,7 +182,7 @@ void Program::registerInMessageBox()
 	if (users.empty())
 	{
 		cout << "Nao existem utilizadores para mandar mensagens. \nAdicione alguns e tente outra vez.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	showAllUsers();
@@ -182,7 +192,7 @@ void Program::registerInMessageBox()
 	if (messageBoxes.empty())
 	{
 		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	showAllMessageboxes();
@@ -217,7 +227,8 @@ void Program::addUser()
 	}
 	User util(first, last);
 	users.push_back(util);
-	cout << "\n\n	**** Utilizador adicionado com sucesso ****";	
+	cout << "\n\n	**** Utilizador adicionado com sucesso ****\n";
+	hold();
 }
 
 void Program::sendMessage()
@@ -226,7 +237,7 @@ void Program::sendMessage()
 	if (users.empty())
 	{
 		cout << "Nao existem utilizadores para mandar mensagens. \nAdicione alguns e tente outra vez.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	showAllUsers();
@@ -242,7 +253,7 @@ void Program::sendMessage()
 	if (messageBoxes.empty())
 	{
 		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	showAllMessageboxes();
@@ -252,7 +263,7 @@ void Program::sendMessage()
 	if (!SendTo->isRegistered(Reciever) || !SendTo->isRegistered(Sender))
 	{
 		cout << "Um dos utilizadores nao se encontra registado na caixa de mensagens. Por favor tente outra vez.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	if (!handleAuth(*SendTo, Sender)) 
@@ -287,46 +298,46 @@ void Program::readMessage()
 	if (users.empty())
 	{
 		cout << "Nao existem utilizadores para mandar mensagens. \nAdicione alguns e tente outra vez.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	showAllUsers();
 	cout << "Escolha o utilizador que pretende ler mensagens: ";
 	unsigned short temp;
 	temp = handleChoice(0, users.size());
-	User ChosenOne = users[temp];
+	User* ChosenOne = &users[temp];
 	endl(cout);
 	if (messageBoxes.empty())
 	{
 		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	showAllMessageboxes();
 	cout << "Escolha a caixa de mensagens a que se pretende ligar: ";
 	temp = handleChoice(0, messageBoxes.size());
-	MessageBox ReadFrom = messageBoxes[temp];
-	if (!ReadFrom.isRegistered(ChosenOne))
+	MessageBox* ReadFrom = &messageBoxes[temp];
+	if (!ReadFrom->isRegistered(*ChosenOne))
 	{
 		cout << "O utilizador escolhido nao esta registado na caixa. Por favor tente novamente\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
-	if (!handleAuth(ReadFrom, ChosenOne))
+	if (!handleAuth(*ReadFrom, *ChosenOne))
 		return;
 	vector<Message> msgs; 
-	msgs = ReadFrom.getAllMessagesFor(ChosenOne);
+	msgs = ReadFrom->getAllMessagesFor(*ChosenOne);
 	if (msgs.empty())
 	{
 		cout << "O utilizador nao tem mensagens.\n";
-		system("pause"); //REPLACE REPLACE REPLACE EPSLFSDGSD
+		hold();
 		return;
 	}
 	showMessages(msgs);
 	cout << "Escolha a mensagem que pretende ler: ";
 	temp = handleChoice(0, msgs.size());
 	showMessage(msgs[temp]);
-	system("pause"); 
+	hold();
 }
 
 //////////////////////////////////////////////////////////////////////////
