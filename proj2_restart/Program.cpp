@@ -5,12 +5,15 @@
 #include <iosfwd>
 
 
+
 using std::ifstream;
 using std::ofstream;
 using std::endl;
 using std::cout;
 using std::cin;
 using std::stringstream;
+using std::setw;
+using std::resetiosflags;
 
 Program::Program()
 {
@@ -18,14 +21,13 @@ Program::Program()
 
 bool Program::stringIsNumber(string& victim)
 {
-	bool result = true;
 	for (size_t i = 0; i < victim.size(); ++i)
 	{
-		int aye = victim[i];
-		bool isit = ((aye < 48) || (aye > 57));
-		result = result && !isit;
+		char& aye = victim[i]; //define-se uma referencia para a letra a ser correntemente processada
+		bool isit = ((aye < 48) || (aye > 57)); //e verifica se cada um e um algarismo
+		if (isit) return false; //se apanhar um char que nao seja um algarismo, a string nao e um
 	}
-	return result;
+	return true;
 }
 int	 Program::intisizer(string str)
 {
@@ -34,6 +36,14 @@ int	 Program::intisizer(string str)
 	sstr << str;
 	sstr >> output;
 	return output;
+}
+string Program::stringisizer(int i)
+{
+	stringstream hello;
+	string str;
+	hello << i;
+	hello >> str;
+	return str;
 }
 User Program::getUser(string firstname, string lastname)
 {
@@ -48,31 +58,35 @@ User Program::getUser(string firstname, string lastname)
     return User("", "");
 }
 void Program::hold()
+//Substituto de system("pause");
 {
 	{ char c;
 	cout << "Carregue enter para continuar...";
 	cin.read(&c,1); 
-	if (cin.peek() == 0xA) {;}
+	if (cin.peek() == 10) {}
 	}
 }
 void Program::addMessageBox()
+//Adiciona uma caixa de mensagens, verificando antes se ela ja existe
 {
 	string nome;
 	cout << "	**** Adicao de Caixa de Mensagens ****\n\n" << "Nome: ";
 	getline(cin, nome);
 	while (nome.size() > 18)
+		//No caso do nome ter um tamanho superior a 18, o utilizador deve rectificar o erro
 	{
 		cout << "O nome dado tem mais do que 18 caracteres. Rectifique este erro e tente novamente.\n";
 		getline(cin, nome);
 	}
-	MessageBox MessBox(nome);
 	bool check = false;
 	for (size_t i = 0; i < messageBoxes.size() ; ++i)
 	{
-		check = check || (messageBoxes[i].getName() == nome);
+		check = check || (messageBoxes[i].getName() == nome); //Compara se existe uma messagebox com o mesmo nome
 	}
 	if (!check)
+		//e no caso de nao existir, constroi uma messagebox com o nome dado pelo utilizador
 	{
+		MessageBox MessBox(nome);
 		messageBoxes.push_back(MessBox);
 		cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****";
 		hold();
@@ -85,14 +99,14 @@ void Program::addMessageBox()
 }
 
 void Program::showAllMessageboxes()
+//Encapsula numa caixa uma lista de todas as messageboxes existentes
 {
 	cout << "\nCaixas de Mensagens:\n";
 	cout << "+-----+----------------------+\n";
 	for (size_t i = 0; i < messageBoxes.size() ; ++i)
 	{
-		cout << "|   " << i <<	" |";
-		string temp((21 - (messageBoxes[i].getName()).size()), ' ');
-		cout << temp << messageBoxes[i].getName() << " |\n";
+		cout << setw(4) << i <<	" |";
+		cout << setw(21) << messageBoxes[i].getName() << " |\n";
 	}
 	cout << "+-----+----------------------+\n";
 }
@@ -104,31 +118,30 @@ void Program::showAllUsers()
 	cout << "+-----+----------------------+----------------------+\n";
 	for (size_t i = 0; i < users.size() ; ++i)
 	{
-		cout << "|   " << i <<	" |";
-		string temp((21 - (users[i].getFirstname()).size()), ' ');
-		cout << temp << users[i].getFirstname();
+		string stri = stringisizer(i);
+		cout << "|" << setw(4) << i <<	" |";
+		cout << setw(21) << users[i].getFirstname();
 		cout << " |";
-		temp = string((21 - (users[i].getLastname()).size()), ' ');
-		cout << temp << users[i].getLastname() << " |\n";
+		cout << setw(21) << users[i].getLastname() << " |\n";
 	}
 	cout << "+-----+----------------------+----------------------+\n";
 }
 
-void Program::showMessages(vector<Message>& msgs)
 
+void Program::showMessages(vector<Message>& msgs)
+//De uma maneira similar a showAllMessages, mostra um vector de mensagens no ecra, encapsulado
 {
 	cout << "Mensagens:\n\n";
-	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22
+	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22 espacos brancos
 	cout << "|   # |                                     De |              Assunto |\n";
 	cout << "+-----+----------------------------------------+----------------------+\n";
 	for (int i = msgs.size()-1; i >= 0 ; --i)
 	{
-		cout << "|   " << i <<	" |";
-		string temp((39 - (msgs[i].getSenderName()).size()), ' ');
-		cout << temp << msgs[i].getSenderName();
+		
+		cout << "|" << setw(4) << i <<	" |";
+		cout << setw(21) << msgs[i].getSenderName();
 		cout << " |";
-		temp = string((21 - (msgs[i].getSubject()).size()), ' ');
-		cout << temp << msgs[i].getSubject(	) << " |\n";
+		cout << setw(21) << msgs[i].getSubject(	) << " |\n";
 	}
 	cout << "+-----+----------------------------------------+----------------------+\n";
 }
@@ -141,23 +154,25 @@ void Program::showMessage(Message& msg)
 	cout << "	**** FIM DE MENSAGEM ****\n";
 }
 bool Program::handleAuth(MessageBox& MB, User& login )
+//Esta funcao trata de qualquer pedido de autenticacao feito no pedido, nao fazendo nada se o utilizador
+//ja esteja autenticado na caixa de mensagens a que ele esta a tentar aceder
 {
 	bool revisit = false;
 	string pw;
 	while (!MB.isLoggedIn(login)) 
 	{
 		if (revisit) //se o ciclo se repetir mais que uma vez, o utilizador e informado que a password nao estava certa.
-			cout << "\nPassword errada. Escreva \"\\EXIT\" para sair.";
+			cout << "\nPassword errada. Escreva \"\\EXIT\" para sair."; 
 		cout << "\nEspecifique a sua password de acesso: ";
 		cin >> pw;
-		if (pw == "\\EXIT")
+		if (pw == "\\EXIT")//Se o utl
 			return false;
 		MB.loginUser(login, pw);
 		revisit = true;
 	}
 	return true;
 }
-int  Program::handleChoice(int lower, int highernotinclusive) //o maior numero nao e inclusivo para podermos usar vector::size() sem ter que decrementar o resultado
+int  Program::handleChoice(int lower, int highernotinclusive) //o maior numero nao e incluido para podermos usar vector::size() sem ter que decrementar o resultado
 {
 	string schoice;
 	cin >> schoice;

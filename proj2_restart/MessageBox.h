@@ -11,6 +11,8 @@ using std::string;
 using std::vector;
 
 struct MessageboxData
+//Usamos uma estrutura de dados para guardar principalmente a relacao entre um utilizador,
+//a sua password e se ja se autenticou em casa sessao.
 {
 	User utilizador;
 	string password;
@@ -21,18 +23,17 @@ class MessageBox
 {
     private:
 	string nome_caixa;
-	vector<Message> PrivMensagens;
-	vector<MessageboxData> PrivDados;
+	vector<Message> PrivMensagens; //Guardamos num vector todas as mensagens da caixa
+	vector<MessageboxData> PrivDados; //E guardamos todos os utilizadores/passwords
 	
     public:
         MessageBox(string name);
         virtual ~MessageBox();
         string          getName() const;
-		vector<MessageboxData>::iterator FindUser(MessageboxData Data, User usr);
         void            setName(string name);
         void            addMessage(Message message);
         void            addUser(User user, string password);
-		short			getUserIndexFromData(User user);
+		short getUserIndexFromData(User user); //Devolve o indice do utilizador "user" no vector PrivDados, usado em outras funcoes
         bool            loginUser(User user, string password);
         bool            logoutUser(User user);
         bool            isLoggedIn(User user);

@@ -1,13 +1,17 @@
 2
 A
 B
-2
+4
 FIRST|USER|pw
 SECOND|USER|pw
+FIRST|USER|pw
+a|a|pw
 1
 ON A|FIRST|USER|SECOND|USER
 [conteudo]
 A
+
+
 
 
 
@@ -24,6 +28,8 @@ SECOND|USER|0
 ON B|FIRST|USER|SECOND|USER
 [conteudo]
 F
+
+
 
 
 

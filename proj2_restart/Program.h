@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 
 using std::vector;
@@ -37,6 +38,7 @@ class Program
         void saveMessageBoxes(string filename);
         void saveUsers(string filename);
 		void hold();
+		string stringisizer(int i);
 };
 
 #endif
