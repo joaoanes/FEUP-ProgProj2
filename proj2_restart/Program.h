@@ -23,7 +23,7 @@ class Program
 		bool handleAuth(MessageBox& MB, User& login );
 		int handleChoice(int lower, int highernotinclusive);
 		bool stringIsNumber(string& victim);
-		int intisizer(string& str);
+		int intisizer(string str);
 
     public:
         Program();

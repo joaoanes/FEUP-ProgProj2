@@ -60,9 +60,9 @@ void Program::addMessageBox()
 	string nome;
 	cout << "	**** Adicao de Caixa de Mensagens ****\n\n" << "Nome: ";
 	getline(cin, nome);
-	while (nome.size() > 16)
+	while (nome.size() > 18)
 	{
-		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		cout << "O nome dado tem mais do que 18 caracteres. Rectifique este erro e tente novamente.\n";
 		getline(cin, nome);
 	}
 	MessageBox MessBox(nome);
@@ -157,7 +157,7 @@ bool Program::handleAuth(MessageBox& MB, User& login )
 	}
 	return true;
 }
-int Program::handleChoice(int lower, int highernotinclusive) //o maior numero nao e inclusivo para podermos usar vector::size() sem ter que decrementar o resultado
+int  Program::handleChoice(int lower, int highernotinclusive) //o maior numero nao e inclusivo para podermos usar vector::size() sem ter que decrementar o resultado
 {
 	string schoice;
 	cin >> schoice;
@@ -174,8 +174,7 @@ int Program::handleChoice(int lower, int highernotinclusive) //o maior numero na
 		return intisizer(schoice);
 
 	cout << "\nPor favor escolha so numeros para representar escolhas.\n";
-	handleChoice(lower, highernotinclusive);
-
+	return handleChoice(lower, highernotinclusive);
 }
 void Program::registerInMessageBox()
 {
@@ -213,16 +212,16 @@ void Program::addUser()
 	string last;
 	cout << "	**** Adicao de Utilizador ****\n\n" << "Primeiro Nome: ";
 	getline(cin, first);
-	while (first.size() > 16)
+	while (first.size() > 18)
 	{
-		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		cout << "O nome dado tem mais do que 18 caracteres. Rectifique este erro e tente novamente.\n";
 		getline(cin, first);
 	}
 	cout << "Segundo Nome: ";
 	getline(cin, last);
-	while (last.size() > 16)
+	while (last.size() > 18)
 	{
-		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		cout << "O nome dado tem mais do que 18 caracteres. Rectifique este erro e tente novamente.\n";
 		getline(cin, last);
 	}
 	User util(first, last);
@@ -270,11 +269,12 @@ void Program::sendMessage()
 		return; //caso o utilizador escreva "\EXIT" o programa volta ao menu principal
 	cout << "\n\nAssunto da Mensagem: ";
 	string assunto;
-	getline(cin, assunto); //o primeiro e ignorado. go figure.
+	if (cin.peek() == '\n')
+		cin.ignore(1000,'\n');
 	getline(cin, assunto);
-	while (assunto.size() > 16)
+	while (assunto.size() > 18)
 	{
-		cout << "O nome dado tem mais do que 16 caracteres. Rectifique este erro e tente novamente.\n";
+		cout << "O nome dado tem mais do que 18 caracteres. Rectifique este erro e tente novamente.\n";
 		getline(cin, assunto);
 	}
 	string conteudo;
