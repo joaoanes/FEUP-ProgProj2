@@ -16,7 +16,7 @@ Program::Program()
 {
 }
 
-bool Program::stringIsNumber(string victim)
+bool Program::stringIsNumber(string& victim)
 {
 	bool result = true;
 	for (size_t i = 0; i < victim.size(); ++i)
