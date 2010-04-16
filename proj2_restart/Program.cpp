@@ -141,7 +141,7 @@ void Program::showMessages(vector<Message>& msgs)
 	for (int i = msgs.size()-1; i >= 0 ; --i) //Comeca no elemento mais recente (maior indice)
 	{
 		cout << "|" << setw(4) << i <<	" |";
-		cout << setw(40) << msgs[i].getSenderName();
+		cout << setw(39) << msgs[i].getSenderName();
 		cout << " |";
 		cout << setw(21) << msgs[i].getSubject() << " |\n";
 	}
@@ -246,7 +246,7 @@ void Program::addUser()
 {
 	string first;
 	string last;
-	cout << "	**** Adicao de Utilizador ****\n\n" << "Primeiro  q q Nome: ";
+	cout << "	**** Adicao de Utilizador ****\n\n" << "Primeiro Nome: ";
 	getline(cin, first);
 	while (first.size() > 18)
 	{
