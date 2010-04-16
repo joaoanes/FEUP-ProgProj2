@@ -36,9 +36,10 @@ string User::getFullname(User user)
 {
 	return (user.getFirstname() + " " + user.getLastname());
 }
-bool User::equalUsers(User user1, User user2)
+
+bool User::operator== (User &usr)
 {
-
-	return (user1.getFullname(user1) == user2.getFullname(user2));
+	if ((first == usr.first) && (last == usr.last))
+		return true;
+	return false;
 }
-

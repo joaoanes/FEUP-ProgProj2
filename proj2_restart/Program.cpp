@@ -20,16 +20,18 @@ Program::Program()
 }
 
 bool Program::stringIsNumber(string& victim)
+//Verifica se certa string pode representar um numero literal
 {
 	for (size_t i = 0; i < victim.size(); ++i)
 	{
 		char& aye = victim[i]; //define-se uma referencia para a letra a ser correntemente processada
 		bool isit = ((aye < 48) || (aye > 57)); //e verifica se cada um e um algarismo
-		if (isit) return false; //se apanhar um char que nao seja um algarismo, a string nao e um
+		if (isit) return false; //se apanhar um char que nao seja um algarismo, a string nao e um numero, logo nao e necessario continuar
 	}
 	return true;
 }
 int	 Program::intisizer(string str)
+//string -> int
 {
 	int output;
 	stringstream sstr;
@@ -38,9 +40,10 @@ int	 Program::intisizer(string str)
 	return output;
 }
 string Program::stringisizer(int i)
+//int -> string
 {
 	stringstream hello;
-	string str;
+	string str;	
 	hello << i;
 	hello >> str;
 	return str;
@@ -111,6 +114,7 @@ void Program::showAllMessageboxes()
 	cout << "+-----+----------------------+\n";
 }
 void Program::showAllUsers()
+//Mostra todos os utilizadores com indice crescente
 {
 	cout << "Utilizadores:\n";
 	cout << "+-----+----------------------+----------------------+\n"; 
@@ -139,7 +143,7 @@ void Program::showMessages(vector<Message>& msgs)
 	{
 		
 		cout << "|" << setw(4) << i <<	" |";
-		cout << setw(21) << msgs[i].getSenderName();
+		cout << setw(40) << msgs[i].getSenderName();
 		cout << " |";
 		cout << setw(21) << msgs[i].getSubject(	) << " |\n";
 	}
@@ -147,6 +151,7 @@ void Program::showMessages(vector<Message>& msgs)
 }
 
 void Program::showMessage(Message& msg)
+//Mostra uma mensagem passada por referencia nos argumentos
 {
 	cout << "Assunto: " << msg.getSubject() << endl
 		<< "Remetente: " << msg.getSenderName() << endl
@@ -165,7 +170,8 @@ bool Program::handleAuth(MessageBox& MB, User& login )
 			cout << "\nPassword errada. Escreva \"\\EXIT\" para sair."; 
 		cout << "\nEspecifique a sua password de acesso: ";
 		cin >> pw;
-		if (pw == "\\EXIT")//Se o utl
+		if (pw == "\\EXIT")//Se o utilizador por qualquer motivo desistir do processo, pode escrever "\EXIT" para desistir do processo
+			//Retornando entao o valor "false"
 			return false;
 		MB.loginUser(login, pw);
 		revisit = true;
@@ -173,27 +179,36 @@ bool Program::handleAuth(MessageBox& MB, User& login )
 	return true;
 }
 int  Program::handleChoice(int lower, int highernotinclusive) //o maior numero nao e incluido para podermos usar vector::size() sem ter que decrementar o resultado
+//Esta funcao aje mais como uma subrotina, tratando de todas as operacoes que envolvam escolhas numericas
 {
 	string schoice;
 	cin >> schoice;
 	while (((intisizer(schoice) >= highernotinclusive) || (intisizer(schoice) < lower)) && stringIsNumber(schoice))
+		//Este ciclo so se processa caso o que utilizador escreveu for realmente so constituido por algarismos e compara se 
+		//esta se encontra entre as opcoes validas e se e uma escolha valida em termos de sintaxe
 	{
 		cout << "\nA sua escolha encontra-se fora das escolhas disponiveis. ";
 		if (lower != (highernotinclusive - 1))
+			//Caso exista mais de uma opcao por onde escolher, ele mostra os resultados possiveis
 			cout << "Por favor escolha uma opcao de " << lower << " ate " << highernotinclusive-1 << ".\n";
 		else 
+			//Senao ele mostra o unico resultado possivel
 			cout << "So pode escolher " << lower << ".\n";
 		cin >> schoice;
 	}
+	//O que pode acontecer tambem e dentro do ciclo while o utilizador colocar algo que nao e um numero, tendo caracteres que nao sao algarismos
+	//Nessa situacao o ciclo while termina, e e feita a verificacao neste if, que caso seja valido, tendo "escapado" o while, tem de
+	//ser necessariamente um numero valido
 	if (stringIsNumber(schoice))
 		return intisizer(schoice);
-
+	//caso nao o seja, a funcao e chamada recursivamente ate encontrar uma possivel.
 	cout << "\nPor favor escolha so numeros para representar escolhas.\n";
 	return handleChoice(lower, highernotinclusive);
 }
 void Program::registerInMessageBox()
+//Regista um utilizador numa messagebox
 {
-	if (users.empty())
+	if (users.empty())//Primeiro ele verifica se existem utilizadores passiveis de ser registados
 	{
 		cout << "Nao existem utilizadores para mandar mensagens. \nAdicione alguns e tente outra vez.\n";
 		hold();
@@ -202,8 +217,9 @@ void Program::registerInMessageBox()
 	showAllUsers();
 	cout << "\nEscolha o utilizador a registar: ";
 	unsigned short choice = handleChoice(0, users.size());
-	User ChosenOne = users[choice];
-	if (messageBoxes.empty())
+	User* ChosenOne = &users[choice]; //E guardada a escolha do utilizador num apontador para o User no vector users, de modo a acelara
+	//os acessos a memoria
+	if (messageBoxes.empty())//E verifica se existem caixas de correio passiveis de aceitarem registos
 	{
 		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
 		hold();
@@ -212,20 +228,26 @@ void Program::registerInMessageBox()
 	showAllMessageboxes();
 	cout << "\n\nEscolha a caixa de mensagens na qual se pretende registar: ";
 	choice = handleChoice(0, messageBoxes.size());
+	if (messageBoxes[choice].isRegistered(*ChosenOne))//Verifica-se se ja ha algum utilizador com o mesmo nome.
+	{
+		cout << "O utilizador que pretende registar ja se encontra registado.\n"; 
+		return;
+	}
 	cout << "Escolha a sua password de acesso: ";
 	string passwd;
 	getline(cin, passwd);
 	getline(cin, passwd);
-	messageBoxes[choice].addUser(ChosenOne, passwd);
+	messageBoxes[choice].addUser(*ChosenOne, passwd); //Se nao, adiciona um utilizador a lis
 
-	cout << "\n\n	**** Utilizador registado com sucesso ****";
+	cout << "\n\n	**** Utilizador registado com sucesso ****";	
 }
 
 void Program::addUser()
+//De maneira simples, este pede duas variavei de 18chars e constrou um dado da classe USER com eles
 {
 	string first;
 	string last;
-	cout << "	**** Adicao de Utilizador ****\n\n" << "Primeiro Nome: ";
+	cout << "	**** Adicao de Utilizador ****\n\n" << "Primeiro  q q Nome: ";
 	getline(cin, first);
 	while (first.size() > 18)
 	{
@@ -246,6 +268,7 @@ void Program::addUser()
 }
 
 void Program::sendMessage()
+//Envia uma mensagem de um utilizador para outro numa messagebox
 {
 	cout << "\n\n	**** Envio de Mensagens ****\n";
 	if (users.empty())
@@ -259,7 +282,7 @@ void Program::sendMessage()
 	cout << "Escolha o emissor da mensagem: ";
 	unsigned short temp;
 	temp = handleChoice(0, users.size());
-	User Sender = users[temp];
+	User* Sender = users[temp];
 	cout << "Escolha o receptor da mensagem: ";
 	temp = handleChoice(0, users.size());
 	User Reciever = users[temp];
@@ -297,17 +320,22 @@ void Program::sendMessage()
 	cout << "Por favor escreva o conteudo da mensagem. Indique o fim da sua mensagem com uma linha consistindo apenas de um \".\"\n";
 	getline(cin, temp2);
 	while (temp2 != ".")
+		//Aqui, ate encontrar um "." em temp2, vai construindo o conteudo com as linhas de texto e um caracter endl apos cada linha
+		//ja que cin ignora endlines
 	{
 		conteudo += temp2;
 		getline(cin, temp2);
-		conteudo += "\n";
+		conteudo  += "\n";
 	}
 	Message msg(Sender, Reciever, assunto, conteudo);
 	SendTo->addMessage(msg);
+	//Apos estarem reunidos todos os dados, constroi-se a mensagem e adiciona-se a messagebox
+
 	cout << "\n		**** Mensagem Enviada ****";
 }
 
 void Program::readMessage()
+//Le uma mensagem escolhida pelo utilizador
 {
 	cout << "\n\n	**** Envio de Mensagens ****\n";
 	if (users.empty())
@@ -320,7 +348,7 @@ void Program::readMessage()
 	cout << "Escolha o utilizador que pretende ler mensagens: ";
 	unsigned short temp;
 	temp = handleChoice(0, users.size());
-	User* ChosenOne = &users[temp];
+	User* ChosenOne = &users[temp]; //E lido o utilizador escolhido como um apontador
 	endl(cout);
 	if (messageBoxes.empty())
 	{
@@ -331,7 +359,7 @@ void Program::readMessage()
 	showAllMessageboxes();
 	cout << "Escolha a caixa de mensagens a que se pretende ligar: ";
 	temp = handleChoice(0, messageBoxes.size());
-	MessageBox* ReadFrom = &messageBoxes[temp];
+	MessageBox* ReadFrom = &messageBoxes[temp]; //E a messagebox para onde ler e lida tambem como apontador
 	if (!ReadFrom->isRegistered(*ChosenOne))
 	{
 		cout << "O utilizador escolhido nao esta registado na caixa. Por favor tente novamente\n";
@@ -342,15 +370,16 @@ void Program::readMessage()
 		return;
 	vector<Message> msgs; 
 	msgs = ReadFrom->getAllMessagesFor(*ChosenOne);
+	//E criado um vector contendo todas as mensagens enderecadas ao User escolhido
 	if (msgs.empty())
 	{
 		cout << "O utilizador nao tem mensagens.\n";
 		hold();
 		return;
 	}
-	showMessages(msgs);
+	showMessages(msgs); //Depois e apresentado ao utilizador a lista de mensagens totais
 	cout << "Escolha a mensagem que pretende ler: ";
-	temp = handleChoice(0, msgs.size());
+	temp = handleChoice(0, msgs.size()); //E ele escolhe a mensagem que quer ler.
 	showMessage(msgs[temp]);
 	hold();
 }

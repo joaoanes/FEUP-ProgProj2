@@ -18,8 +18,8 @@ class User
         void    setFirstname(string firstname);
         string  getLastname() const;
         void    setLastname(string lastname);
-		static bool	equalUsers(User user1, User user2); //E PRA SAIR
 		string getFullname(User user); //Retorna uma string de "first" + " " + "last"
+		bool User::operator== (User &usr); //Compara entre dois utilizadores de maneira mais intuitiva
 };
 
 #endif

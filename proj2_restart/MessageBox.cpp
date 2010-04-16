@@ -28,7 +28,7 @@ short MessageBox::getUserIndexFromData( User user )
 {
 	for (size_t i = 0; i < PrivDados.size() ; ++i)
 	{
-		if (User::equalUsers(user, PrivDados[i].utilizador)) return i; 
+		if (user == PrivDados[i].utilizador) return i; 
 	}
 	return -1; //retorna -1 caso nao exista
 }
@@ -78,7 +78,7 @@ vector<Message> MessageBox::getAllMessagesFor(User user)
    vector<Message> UserMessages; //Declara um vector vazio
    for (size_t i = 0; i < PrivMensagens.size() ; ++i)
    {
-	   if (User::equalUsers(user, PrivMensagens[i].getRecipient()))
+	   if (user == PrivMensagens[i].getRecipient())
 		   UserMessages.push_back(PrivMensagens[i]);
 	   //Vector esse que e preenchido com mensagens que tenham como destinatario o User user.
    }
