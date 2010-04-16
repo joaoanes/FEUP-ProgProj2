@@ -13,7 +13,6 @@ using std::cout;
 using std::cin;
 using std::stringstream;
 using std::setw;
-using std::resetiosflags;
 
 Program::Program()
 {
@@ -25,8 +24,8 @@ bool Program::stringIsNumber(string& victim)
 	for (size_t i = 0; i < victim.size(); ++i)
 	{
 		char& aye = victim[i]; //define-se uma referencia para a letra a ser correntemente processada
-		bool isit = ((aye < 48) || (aye > 57)); //e verifica se cada um e um algarismo
-		if (isit) return false; //se apanhar um char que nao seja um algarismo, a string nao e um numero, logo nao e necessario continuar
+		bool isit = ((aye < 48) || (aye > 57)); //e verifica se cada um e' um algarismo
+		if (isit) return false; //se encontrar um char que nao seja um algarismo, a string nao e um numero, logo nao e necessario continuar
 	}
 	return true;
 }
@@ -139,13 +138,12 @@ void Program::showMessages(vector<Message>& msgs)
 	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22 espacos brancos
 	cout << "|   # |                                     De |              Assunto |\n";
 	cout << "+-----+----------------------------------------+----------------------+\n";
-	for (int i = msgs.size()-1; i >= 0 ; --i)
+	for (int i = msgs.size()-1; i >= 0 ; --i) //Comeca no elemento mais recente (maior indice)
 	{
-		
 		cout << "|" << setw(4) << i <<	" |";
 		cout << setw(40) << msgs[i].getSenderName();
 		cout << " |";
-		cout << setw(21) << msgs[i].getSubject(	) << " |\n";
+		cout << setw(21) << msgs[i].getSubject() << " |\n";
 	}
 	cout << "+-----+----------------------------------------+----------------------+\n";
 }
@@ -155,11 +153,11 @@ void Program::showMessage(Message& msg)
 {
 	cout << "Assunto: " << msg.getSubject() << endl
 		<< "Remetente: " << msg.getSenderName() << endl
-		<< "Conteudo: " << msg.getContents(); //a mensagem ja termina com endl
+		<< "Conteudo: " << msg.getContents(); //o conteudo ja termina com endl
 	cout << "	**** FIM DE MENSAGEM ****\n";
 }
-bool Program::handleAuth(MessageBox& MB, User& login )
-//Esta funcao trata de qualquer pedido de autenticacao feito no pedido, nao fazendo nada se o utilizador
+bool Program::handleAuth(MessageBox& MB, User& login)
+//Esta funcao trata de qualquer pedido de autenticacao feito no programa, nao fazendo nada se o utilizador
 //ja esteja autenticado na caixa de mensagens a que ele esta a tentar aceder
 {
 	bool revisit = false;
@@ -235,9 +233,10 @@ void Program::registerInMessageBox()
 	}
 	cout << "Escolha a sua password de acesso: ";
 	string passwd;
+	if (cin.peek() == '\n')
+		cin.ignore(1000,'\n');
 	getline(cin, passwd);
-	getline(cin, passwd);
-	messageBoxes[choice].addUser(*ChosenOne, passwd); //Se nao, adiciona um utilizador a lis
+	messageBoxes[choice].addUser(*ChosenOne, passwd); //Se nao, adiciona um utilizador ao vector de utilizadores registados
 
 	cout << "\n\n	**** Utilizador registado com sucesso ****";	
 }
@@ -282,10 +281,10 @@ void Program::sendMessage()
 	cout << "Escolha o emissor da mensagem: ";
 	unsigned short temp;
 	temp = handleChoice(0, users.size());
-	User* Sender = users[temp];
+	User* Sender = &users[temp];
 	cout << "Escolha o receptor da mensagem: ";
 	temp = handleChoice(0, users.size());
-	User Reciever = users[temp];
+	User* Reciever = &users[temp];
 	cout << endl;
 	if (messageBoxes.empty())
 	{
@@ -297,13 +296,13 @@ void Program::sendMessage()
 	cout << "\n\nEscolha a caixa de mensagens para a qual pretende enviar o e-mail: ";
 	temp = handleChoice(0, messageBoxes.size());
 	MessageBox* SendTo = &messageBoxes[temp];
-	if (!SendTo->isRegistered(Reciever) || !SendTo->isRegistered(Sender))
+	if (!SendTo->isRegistered(*Reciever) || !SendTo->isRegistered(*Sender))
 	{
 		cout << "Um dos utilizadores nao se encontra registado na caixa de mensagens. Por favor tente outra vez.\n";
 		hold();
 		return;
 	}
-	if (!handleAuth(*SendTo, Sender)) 
+	if (!handleAuth(*SendTo, *Sender)) 
 		return; //caso o utilizador escreva "\EXIT" o programa volta ao menu principal
 	cout << "\n\nAssunto da Mensagem: ";
 	string assunto;
@@ -327,7 +326,7 @@ void Program::sendMessage()
 		getline(cin, temp2);
 		conteudo  += "\n";
 	}
-	Message msg(Sender, Reciever, assunto, conteudo);
+	Message msg(*Sender, *Reciever, assunto, conteudo);
 	SendTo->addMessage(msg);
 	//Apos estarem reunidos todos os dados, constroi-se a mensagem e adiciona-se a messagebox
 
@@ -349,7 +348,7 @@ void Program::readMessage()
 	unsigned short temp;
 	temp = handleChoice(0, users.size());
 	User* ChosenOne = &users[temp]; //E lido o utilizador escolhido como um apontador
-	endl(cout);
+	cout << endl;
 	if (messageBoxes.empty())
 	{
 		cout << "Nao ha caixas de mensagens. Adicione algumas e tente outra vez.\n";
@@ -362,7 +361,7 @@ void Program::readMessage()
 	MessageBox* ReadFrom = &messageBoxes[temp]; //E a messagebox para onde ler e lida tambem como apontador
 	if (!ReadFrom->isRegistered(*ChosenOne))
 	{
-		cout << "O utilizador escolhido nao esta registado na caixa. Por favor tente novamente\n";
+		cout << "O utilizador escolhido nao esta registado na caixa. Por favor tente novamente.\n";
 		hold();
 		return;
 	}
