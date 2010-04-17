@@ -112,14 +112,14 @@ bool MessageBox::isRegistered(User user)
 vector<Message> MessageBox::getAllMessagesFor(User user)
 {
    vector<Message> UserMessages; //Declara um vector vazio
-   for (size_t i = 0; i < PrivMensagens.size() ; ++i)
+   
+   for (short i = ((short) PrivMensagens.size())-1; i >= 0 ; --i) //Comeca no fim, pois as mensagens aparecem de ordem inversa a chegada a caixa
    {
 	   User temp = PrivMensagens[i].getRecipient();
 	   if (user == temp)
 		   UserMessages.push_back(PrivMensagens[i]);
-	   //Vector esse que e preenchido com mensagens que tenham como destinatario o User user.
+	   //Vector e preenchido com mensagens que tenham como destinatario o User user.
    }
-   std::reverse(UserMessages.begin(), UserMessages.end());
    return UserMessages; //Que e devolvido no final.
 }
 

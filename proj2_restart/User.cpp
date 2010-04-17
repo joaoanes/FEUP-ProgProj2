@@ -74,7 +74,5 @@ string User::getFullname(User user)
 
 bool User::operator== (User &usr)
 {
-	if ((first == usr.first) && (last == usr.last))
-		return true;
-	return false;
+	return ((first == usr.first) && (last == usr.last));
 }

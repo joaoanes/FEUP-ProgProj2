@@ -170,17 +170,18 @@ void Program::showAllUsers()
 void Program::showMessages(vector<Message>& msgs)
 //De uma maneira similar a showAllMessages, mostra um vector de mensagens no ecra, encapsulado
 {
-	std::reverse(msgs.begin(), msgs.end());
+	int oppi = (msgs.size()-1);
 	cout << "Mensagens:\n\n";
 	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22 espacos brancos
 	cout << "|   # |                                     De |              Assunto |\n";
 	cout << "+-----+----------------------------------------+----------------------+\n";
-	for (int i = msgs.size()-1; i >= 0 ; --i) //Comeca no elemento mais recente (maior indice)
+	for (size_t i = 0; i < msgs.size() ; ++i) //Comeca no elemento mais recente (indice 0)
 	{
-		cout << "|" << setw(4) << i <<	" |";
+		cout << "|" << setw(4) << oppi <<	" |"; //mas e mostrado o indice revertido considerando msgs.size()
 		cout << setw(39) << msgs[i].getSenderName();
 		cout << " |";
 		cout << setw(21) << msgs[i].getSubject() << " |\n";
+		--oppi; //o indice tem que acompanhar o crescimento de i
 	}
 	cout << "+-----+----------------------------------------+----------------------+\n";
 }
@@ -430,7 +431,7 @@ void Program::readMessage()
 	}
 	showMessages(msgs); //Depois e apresentado ao utilizador a lista de mensagens totais
 	cout << "Escolha a mensagem que pretende ler: ";
-	temp = handleChoice(0, msgs.size()); //E ele escolhe a mensagem que quer ler.
+	temp = ((msgs.size()-1)-handleChoice(0, msgs.size())); //E ele escolhe a mensagem que quer ler. Inverte-se a escolha considerando que o vector e mostrado ao contrario.
 	showMessage(msgs[temp]);
 	hold();
 }
