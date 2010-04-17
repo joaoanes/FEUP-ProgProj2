@@ -1,3 +1,40 @@
+/*
+PROJECTO: Projecto 2
+FICHEIRO: Program.cpp
+DESCRICAO: Implementa todas as funcoes associadas ao funcionamento do programa de interface com o utilizador. Interface user-oriented e user-friendly.
+Usa algumas funcoes privadas que apenas tem uso nas outras funcoes da mesma classe. Nao foram encontrados erros nem mais situacoes de erro ao longo do desenvolvimento 
+que nao estejam contemplados e tratados.
+TURMA / GRUPO: 9/04
+AUTORES:
+- Eduardo Jesus 
+- Joao Anes
+DECLARACAO:
+Declaramos sob compromisso de honra que este trabalho nas suas partes constituintes de codigo (e
+relatorio, se aplicavel)? e original e da nossa autoria, nao correspondendo, portanto, a copia ou traducao
+de outros trabalhos ja realizados, na FEUP ou fora dela.
+Mais declaramos que todos os documentos ou c½digo que serviram de base ao desenvolvimento do
+trabalho descrito no relatorio e seus anexos s?o adequadamente citados e explicitados na respectiva
+seccao de referencias bibliograficas e que todas as eventuais partes transcritas ou utilizadas de outras
+fontes estao devidamente assinaladas, identificadas e evidenciadas.
+Subscrevemos a declaracao acima:
+Eduardo Jesus,
+Joao Anes
+REFERENCIAS E FONTES DE INFORMACAO UTILIZADAS:
+cplusplus.com
+cppreference.com
+stackoverflow.com
+SISTEMA OPERATIVO:
+Windows 7
+AMBIENTE DE DESENVOLVIMENTO:
+Visual Studio 2008
+DATA DE INICIO: 05/04
+DATA DE CONCLUSAO: 17/04
+ESPECIFICACOS ADICIONAIS:
+Testado com:
+MSVC C++
+ICC
+g++
+*/
 #include "Program.h"
 #include <fstream>
 #include <iostream>
@@ -62,11 +99,10 @@ User Program::getUser(string firstname, string lastname)
 void Program::hold()
 //Substituto de system("pause");
 {
-	{ char c;
+	char c;
 	cout << "Carregue enter para continuar...";
-	cin.read(&c,1); 
-	if (cin.peek() == 10) {}
-	}
+	cin.get(&c, 1);
+	cin.clear();
 }
 void Program::addMessageBox()
 //Adiciona uma caixa de mensagens, verificando antes se ela ja existe
@@ -90,7 +126,7 @@ void Program::addMessageBox()
 	{
 		MessageBox MessBox(nome);
 		messageBoxes.push_back(MessBox);
-		cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****";
+		cout << "\n\n	**** Caixa de mensagens adicionada com sucesso ****\n";
 		hold();
 	}
 	else
@@ -158,7 +194,7 @@ void Program::showMessage(Message& msg)
 }
 bool Program::handleAuth(MessageBox& MB, User& login)
 //Esta funcao trata de qualquer pedido de autenticacao feito no programa, nao fazendo nada se o utilizador
-//ja esteja autenticado na caixa de mensagens a que ele esta a tentar aceder
+//ja esteja autenticado na caixa de mensagens a que ele esta a tentar aceder. Usa sempre cin
 {
 	bool revisit = false;
 	string pw;
@@ -167,7 +203,7 @@ bool Program::handleAuth(MessageBox& MB, User& login)
 		if (revisit) //se o ciclo se repetir mais que uma vez, o utilizador e informado que a password nao estava certa.
 			cout << "\nPassword errada. Escreva \"\\EXIT\" para sair."; 
 		cout << "\nEspecifique a sua password de acesso: ";
-		cin >> pw;
+		getline(cin, pw);
 		if (pw == "\\EXIT")//Se o utilizador por qualquer motivo desistir do processo, pode escrever "\EXIT" para desistir do processo
 			//Retornando entao o valor "false"
 			return false;
@@ -180,7 +216,7 @@ int  Program::handleChoice(int lower, int highernotinclusive) //o maior numero n
 //Esta funcao aje mais como uma subrotina, tratando de todas as operacoes que envolvam escolhas numericas
 {
 	string schoice;
-	cin >> schoice;
+	getline(cin, schoice);
 	while (((intisizer(schoice) >= highernotinclusive) || (intisizer(schoice) < lower)) && stringIsNumber(schoice))
 		//Este ciclo so se processa caso o que utilizador escreveu for realmente so constituido por algarismos e compara se 
 		//esta se encontra entre as opcoes validas e se e uma escolha valida em termos de sintaxe
@@ -192,13 +228,15 @@ int  Program::handleChoice(int lower, int highernotinclusive) //o maior numero n
 		else 
 			//Senao ele mostra o unico resultado possivel
 			cout << "So pode escolher " << lower << ".\n";
-		cin >> schoice;
+	getline(cin, schoice);
 	}
 	//O que pode acontecer tambem e dentro do ciclo while o utilizador colocar algo que nao e um numero, tendo caracteres que nao sao algarismos
 	//Nessa situacao o ciclo while termina, e e feita a verificacao neste if, que caso seja valido, tendo "escapado" o while, tem de
 	//ser necessariamente um numero valido
 	if (stringIsNumber(schoice))
+	{
 		return intisizer(schoice);
+	}
 	//caso nao o seja, a funcao e chamada recursivamente ate encontrar uma possivel.
 	cout << "\nPor favor escolha so numeros para representar escolhas.\n";
 	return handleChoice(lower, highernotinclusive);
@@ -229,6 +267,7 @@ void Program::registerInMessageBox()
 	if (messageBoxes[choice].isRegistered(*ChosenOne))//Verifica-se se ja ha algum utilizador com o mesmo nome.
 	{
 		cout << "O utilizador que pretende registar ja se encontra registado.\n"; 
+		hold();
 		return;
 	}
 	cout << "Escolha a sua password de acesso: ";
@@ -238,7 +277,8 @@ void Program::registerInMessageBox()
 	getline(cin, passwd);
 	messageBoxes[choice].addUser(*ChosenOne, passwd); //Se nao, adiciona um utilizador ao vector de utilizadores registados
 
-	cout << "\n\n	**** Utilizador registado com sucesso ****";	
+	cout << "\n\n	**** Utilizador registado com sucesso ****\n";
+	hold();
 }
 
 void Program::addUser()
@@ -261,8 +301,15 @@ void Program::addUser()
 		getline(cin, last);
 	}
 	User util(first, last);
-	users.push_back(util);
-	cout << "\n\n	**** Utilizador adicionado com sucesso ****\n";
+	User temp = User("", "");
+	if (getUser(first, last) == temp)
+	{
+		users.push_back(util);
+		cout << "\n\n	**** Utilizador adicionado com sucesso ****\n";
+		hold();
+		return;
+	}
+	cout << "O utilizador que pretende registar ja esta registado.\n";
 	hold();
 }
 
@@ -330,7 +377,8 @@ void Program::sendMessage()
 	SendTo->addMessage(msg);
 	//Apos estarem reunidos todos os dados, constroi-se a mensagem e adiciona-se a messagebox
 
-	cout << "\n		**** Mensagem Enviada ****";
+	cout << "\n		**** Mensagem Enviada ****\n";
+	hold();
 }
 
 void Program::readMessage()

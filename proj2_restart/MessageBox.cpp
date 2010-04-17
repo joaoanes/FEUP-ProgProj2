@@ -1,3 +1,39 @@
+/*
+PROJECTO: Projecto 2
+FICHEIRO: MessageBox.cpp
+DESCRICAO: Implementa todas as funcoes relativas ao funcionamento de uma caixa de mensagens como gestao 
+de utilizadores e acesso a mensagens. Funciona sem falhas ou erros.
+TURMA / GRUPO: 9/04
+AUTORES:
+- Eduardo Jesus 
+- Joao Anes
+DECLARACAO:
+Declaramos sob compromisso de honra que este trabalho nas suas partes constituintes de codigo (e
+relatorio, se aplicavel)? e original e da nossa autoria, nao correspondendo, portanto, a copia ou traducao
+de outros trabalhos ja realizados, na FEUP ou fora dela.
+Mais declaramos que todos os documentos ou c½digo que serviram de base ao desenvolvimento do
+trabalho descrito no relatorio e seus anexos s?o adequadamente citados e explicitados na respectiva
+seccao de referencias bibliograficas e que todas as eventuais partes transcritas ou utilizadas de outras
+fontes estao devidamente assinaladas, identificadas e evidenciadas.
+Subscrevemos a declaracao acima:
+Eduardo Jesus,
+Joao Anes
+REFERENCIAS E FONTES DE INFORMACAO UTILIZADAS:
+cplusplus.com
+cppreference.com
+stackoverflow.com
+SISTEMA OPERATIVO:
+Windows 7
+AMBIENTE DE DESENVOLVIMENTO:
+Visual Studio 2008
+DATA DE INICIO: 05/04
+DATA DE CONCLUSAO: 17/04
+ESPECIFICACOS ADICIONAIS:
+Testado com:
+MSVC C++
+ICC
+g++
+*/
 #include "MessageBox.h"
 
 MessageBox::MessageBox(string name)
@@ -78,7 +114,8 @@ vector<Message> MessageBox::getAllMessagesFor(User user)
    vector<Message> UserMessages; //Declara um vector vazio
    for (size_t i = 0; i < PrivMensagens.size() ; ++i)
    {
-	   if (user == PrivMensagens[i].getRecipient())
+	   User temp = PrivMensagens[i].getRecipient();
+	   if (user == temp)
 		   UserMessages.push_back(PrivMensagens[i]);
 	   //Vector esse que e preenchido com mensagens que tenham como destinatario o User user.
    }
