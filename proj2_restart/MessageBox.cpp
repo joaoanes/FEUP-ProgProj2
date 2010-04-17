@@ -38,7 +38,7 @@ g++
 
 MessageBox::MessageBox(string name)
 {
-	setName(name);
+	nome_caixa = name;
 }
 
 MessageBox::~MessageBox()

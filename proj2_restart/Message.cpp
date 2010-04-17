@@ -37,10 +37,10 @@ g++
 
 Message::Message(User sender, User recipient, string subject, string contents)
 {
-	setSender(sender);
-	setRecipient(recipient);
-	setSubject(subject);
-	setContents(contents);
+	remetente = sender;
+	destinatario = recipient;
+	assunto = subject;
+	conteudo = contents;
 }
 
 Message::~Message()

@@ -37,8 +37,8 @@ g++
 
 User::User(string firstname, string lastname)
 {
-	setFirstname(firstname);
-	setLastname(lastname);
+	first = firstname;
+	last = lastname;
 }
 User::User()
 {}
