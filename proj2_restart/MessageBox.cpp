@@ -119,6 +119,7 @@ vector<Message> MessageBox::getAllMessagesFor(User user)
 		   UserMessages.push_back(PrivMensagens[i]);
 	   //Vector esse que e preenchido com mensagens que tenham como destinatario o User user.
    }
+   std::reverse(UserMessages.begin(), UserMessages.end());
    return UserMessages; //Que e devolvido no final.
 }
 

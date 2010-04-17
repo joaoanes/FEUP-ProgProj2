@@ -143,7 +143,7 @@ void Program::showAllMessageboxes()
 	cout << "+-----+----------------------+\n";
 	for (size_t i = 0; i < messageBoxes.size() ; ++i)
 	{
-		cout << setw(4) << i <<	" |";
+		cout << "|" << setw(4) << i <<	" |";
 		cout << setw(21) << messageBoxes[i].getName() << " |\n";
 	}
 	cout << "+-----+----------------------+\n";
@@ -153,7 +153,7 @@ void Program::showAllUsers()
 {
 	cout << "Utilizadores:\n";
 	cout << "+-----+----------------------+----------------------+\n"; 
-	cout << "|   # |              1º Nome |              2º Nome |\n";
+	cout << "|   # |              1o Nome |              2o Nome |\n";
 	cout << "+-----+----------------------+----------------------+\n";
 	for (size_t i = 0; i < users.size() ; ++i)
 	{
@@ -170,6 +170,7 @@ void Program::showAllUsers()
 void Program::showMessages(vector<Message>& msgs)
 //De uma maneira similar a showAllMessages, mostra um vector de mensagens no ecra, encapsulado
 {
+	std::reverse(msgs.begin(), msgs.end());
 	cout << "Mensagens:\n\n";
 	cout << "+-----+----------------------------------------+----------------------+\n"; //40 / 22 espacos brancos
 	cout << "|   # |                                     De |              Assunto |\n";
@@ -187,10 +188,13 @@ void Program::showMessages(vector<Message>& msgs)
 void Program::showMessage(Message& msg)
 //Mostra uma mensagem passada por referencia nos argumentos
 {
-	cout << "Assunto: " << msg.getSubject() << endl
-		<< "Remetente: " << msg.getSenderName() << endl
-		<< "Conteudo: " << msg.getContents(); //o conteudo ja termina com endl
-	cout << "	**** FIM DE MENSAGEM ****\n";
+	cout << "--------------------------------------------\n"
+		 << "De: " << msg.getSenderName() << endl
+		 << "Para: " << msg.getRecipientName() << endl
+		 << "Assunto: " << msg.getSubject() << endl
+		 << "Conteudo: " << msg.getContents() //o conteudo ja termina com endl
+	     << "--------------------------------------------\n"
+	     << "	**** Mensagem lida com sucesso ****\n";
 }
 bool Program::handleAuth(MessageBox& MB, User& login)
 //Esta funcao trata de qualquer pedido de autenticacao feito no programa, nao fazendo nada se o utilizador
